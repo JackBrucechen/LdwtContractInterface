@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://www.ynhrss.gov.cn/psp" xmlns:tns="http://www.ynhrss.gov.cn/psp" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	name="YnhrssPSP">
+
+    <wsdl:types>        
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified"  xmlns:tns="http://www.ynhrss.gov.cn/psp" targetNamespace="http://www.ynhrss.gov.cn/psp" xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+			<xs:complexType name="psppilot">
+			    <xs:sequence>
+			    	  <xs:element minOccurs="1" name="version" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="srcsysid" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="userid" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="serviceid" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="invokedatetime" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="encryptkeymode" nillable="true" type="xs:string"/>	
+			        <xs:element minOccurs="1" name="bodyencryptedflag" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="districtid" nillable="true" type="xs:string"/>	
+			        <xs:element minOccurs="1" name="encryptedkey" nillable="true" type="xs:string"/>	
+			        <xs:element minOccurs="1" name="statuscode" nillable="true" type="xs:string"/>	
+			        <xs:element minOccurs="1" name="statusmessage" nillable="true" type="xs:string"/>		        
+			    </xs:sequence>
+			</xs:complexType>		
+			<xs:complexType name="pspheader">
+			    <xs:sequence>
+			    	  <xs:element minOccurs="1" name="srcsysauthtype" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="srcsystoken" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="userauthtype" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="usertoken" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="batchno" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="srcmsgid" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="desmsgid" nillable="true" type="xs:string"/>
+			        <xs:element minOccurs="1" name="secretkeyid" nillable="true" type="xs:string"/>
+			    </xs:sequence>
+			</xs:complexType>		
+			
+			<xs:complexType name="pspenv">
+			    <xs:sequence>
+			    		<xs:element minOccurs="1" name="psppilot" nillable="true" type="tns:psppilot"/>
+			        <xs:element minOccurs="1" name="pspheader" nillable="true" type="tns:pspheader"/>
+			        <xs:element minOccurs="1" name="pspbody" nillable="true" type="xs:string"/>
+			    </xs:sequence>
+			</xs:complexType>	   
+			
+			<xs:element name="pspenv" nillable="true" type="tns:pspenv"/>
+				  
+		 			
+		</xs:schema>		
+    </wsdl:types>
+        
+    <wsdl:message name="ynhrsspspparamer">
+        <wsdl:part element="tns:pspenv" name="parameters"/>
+    </wsdl:message>  
+    
+    <wsdl:portType name="YnhrssPSPPortType">
+        <wsdl:operation name="YnhrssPSPOP">
+            <wsdl:input message="tns:ynhrsspspparamer" name="ynhrsspspinparam"/>
+            <wsdl:output message="tns:ynhrsspspparamer" name="ynhrsspspoutpram"/>
+        </wsdl:operation>        
+    </wsdl:portType>     
+    
+
+    <wsdl:binding name="YnhrssPSPBinding" type="tns:YnhrssPSPPortType">
+		<wsp:PolicyReference xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+			URI="#SignEncr" />
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="YnhrssPSPOP">
+            <wsdlsoap:operation soapAction="ynhrssPSPOP"/>
+            <wsdl:input name="ynhrsspspinparam">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="ynhrsspspoutpram">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation> 
+    </wsdl:binding>
+	  	
+	  
+    <wsdl:service name="ynhrsspspservice">     	  	 
+        <wsdl:port binding="tns:YnhrssPSPBinding" name="YnhrssPSPPortType">
+            <wsdlsoap:address location="http://localhost:8888/ynhrsspspservice"/>
+        </wsdl:port>                        
+    </wsdl:service>
+  
+  <wsp:Policy wsu:Id="SignEncr"
+		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+		<wsp:ExactlyOne>
+			<wsp:All xmlns:wsss="http://schemas.sun.com/2006/03/wss/client"
+				xmlns:wspp="http://java.sun.com/xml/ns/wsit/policy">
+
+
+				<sp:AsymmetricBinding
+					xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+					<wsp:Policy>
+						<!-- 系统验证 -->
+						<sp:InitiatorToken>
+							<wsp:Policy>
+								<sp:X509Token
+									sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+									
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:InitiatorToken>
+						<sp:RecipientToken>
+							<wsp:Policy>
+								<sp:X509Token
+									sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+									
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:RecipientToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:TripleDesRsa15 />
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict />
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:OnlySignEntireHeadersAndBody />
+					</wsp:Policy>
+				</sp:AsymmetricBinding>
+
+
+				<sp:SignedParts
+					xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+					<sp:Body />
+				</sp:SignedParts>
+				<sp:EncryptedParts
+					xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+					<sp:Body />
+				</sp:EncryptedParts>
+					
+				<wsss:KeyStore wspp:visibility="private" location="ynhrsspspclient.keystore"
+					storepass="365923" alias="ynhrsspspclient" keypass="com.neusoft.KeystoreAccess" />
+				<wsss:TrustStore wspp:visibility="private" location="ynhrsspspclient.keystore"
+					storepass="123456" peeralias="ynhrsspspentry" />
+						
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	
+</wsdl:definitions>
+
+ 
+ 

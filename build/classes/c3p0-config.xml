@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<c3p0-config>
+		<named-config  name="InsuranceDs">
+		<!-- 30秒检查一次connection的空闲 -->
+		<property name="idleConnectionTestPeriod">30</property>
+		<!--初始化的池大小 -->
+		<property name="initialPoolSize">2</property>
+		<!-- 最多的一个connection空闲时间 -->
+		<property name="maxIdleTime">0</property>
+		<!-- 最多可以有多少个连接connection -->
+		<property name="maxPoolSize">20</property>
+		<!-- 最少的池中有几个连接 -->
+		<property name="minPoolSize">5</property>
+		<!-- 批处理的语句-->
+		<property name="maxStatements">50</property>
+		<!-- 每次增长几个连接 -->
+		<property name="acquireIncrement">1</property>
+		<property name="driverClass">oracle.jdbc.driver.OracleDriver</property>
+		<property name="jdbcUrl">jdbc:oracle:thin:@10.176.50.1:1521:ggfw</property>
+		<property name="user">EHRSS_YUNN_LABOUR</property>
+		<property name="password">oracle</property>
+	</named-config > 
+</c3p0-config> 
